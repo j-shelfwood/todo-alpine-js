@@ -1,0 +1,55 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="//unpkg.com/alpinejs" defer></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-100">
+        <div class="container mx-auto py-8" x-data="{
+            init() {
+                this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            },
+            input: '',
+            tasks: [],
+            saveTask() {
+                this.tasks.push({
+                    name: this.input,
+                    completed: false
+                });
+                this.input = '';
+                this.persistTasks();
+            },
+            persistTasks() {
+                localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            },
+            toggleCompletion(index) {
+                this.tasks[index].completed = !this.tasks[index].completed;
+                this.persistTasks();
+            }
+        }">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="mb-4">
+                    <label for="input" class="block text-gray-700 font-bold mb-2">Add your task:</label>
+                    <input type="text" name="input" id="input" 
+                    x-model="input" 
+                    @keydown.enter="saveTask"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <span x-text="input"></span>
+            </div>
+            <ul class="mt-4">
+                <template x-for="(task, index) in tasks" :key="index">
+                    <li class="bg-white rounded-lg shadow-lg p-6 mb-4"
+                    :class="{'line-through': task.completed}"
+                    >
+                        <span x-text="task.name"
+                        @click="toggleCompletion(index)"></span>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+  </body>
+</html>
